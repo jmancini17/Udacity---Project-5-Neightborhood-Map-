@@ -4,26 +4,35 @@
 		<meta charset="utf-8">
    		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link href="https://fonts.googleapis.com/css?family=Varela+Round:400,300" rel="stylesheet" type="text/css">
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="css/styles.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="http://maps.googleapis.com/maps/api/js"></script>
+		<script type="text/javascript" charset="UTF-8" src="http://maps.googleapis.com/maps-api-v3/api/js/23/2/common.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="http://maps.googleapis.com/maps-api-v3/api/js/23/2/util.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="http://maps.googleapis.com/maps-api-v3/api/js/23/2/stats.js"></script>
 	</head>
 	<body>
 		<div class="nav_bar row">
 			<form>
-				<input id="search_bar" data-bind="value: this.name" type="text" class="col-md-4" name="city" placeholder="   Enter restaurant">
-				<button type="submit" id="search_button" class="btn col-md-1" type="button" value="Submit">SEARCH</button>
+				<input id="search_bar" data-bind="textInput: restaurantName" type="text" class="col-md-4" name="city" placeholder="Enter restaurant">
+				<button type="submit" id="search_button" class="btn col-md-1" value="Submit">SEARCH</button>
 			</form>
 			<ul id="list_view" class="col-md-3">
 				<h4>Restaurants</h4>
 			</ul>
 		</div>
 		<div id="google_map">
+			
 		</div>
+	    <div id="map_error">
+	        <br><br>
+	        <h1>Unable to Load Google Map</h1>
+	    </div>
 		
-		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/knockout.js"></script>
 		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-	</body>
-</html>
+		<script type="text/javascript" src="js/app.js"></script>
+	
+</body></html>
