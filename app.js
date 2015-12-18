@@ -1,225 +1,228 @@
 var restaurants = [
+	
+	//Hard-coded restaurants to be filtered and searched for and their locations
 	{
-		name: "Old Bear",
-		latitude: 41.901662,
-		longitude: 12.473234,
-		address: "Via dei Gigli D'Oro, 3, 00186 Rome, Italy",
-		url: "http://www.yelp.com/biz/old-bear-roma",
+		name: "Ai Tre Scalini",
+		latitude: 41.897175,
+		longitude: 12.494829,
 	},
 	{
-		name: "La Botticella",
-		latitude: 41.890144,
-		longitude: 12.468270,
-		address: "Vicolo del Leopardo 39A 00153 Rome Italy",
-		url: "http://www.yelp.com/biz/la-botticella-roma",
-	},
-	{
-		name: "Panino Divino",
-		latitude: 41.906896,
-		longitude: 12.458347,
-		address: "Via dei Gracchi 11, 00192 Rome, Italy",
-		url: "http://www.yelp.com/biz/panino-divino-roma",
-	},
-	{
-		name: "Pastasciutta",
-		latitude: 41.904638,
-		longitude: 12.458035,
-		address: "Via delle Grazie 5, 00193 Rome, Italy",
-		url: "http://www.yelp.com/biz/pastasciutta-roma",
+		name: "Da Enzo al 29",
+		latitude: 41.888253,
+		longitude: 12.477852,
 	},
 	{
 		name: "Da Francesco",
 		latitude: 41.899488,
 		longitude: 12.470647,
-		address: "Piazza del Fico 29, 00186 Rome, Italy",
-		url: "http://www.yelp.com/biz/da-francesco-roma?osq=dinner",
 	},
 	{
-		name: "Osteria Barberini",
-		latitude: 41.904433,
-		longitude: 12.487523
-	},
-	{
-		name: "Pastificio",
-		latitude: 41.906396,
-		longitude: 12.480928
-	},
-	{
-		name: "Scilla e Feridi",
-		latitude: 41.897102,
-		longitude: 12.485357
-	},
-	{
-		name: "Pinsere",
-		latitude: 41.907540,
-		longitude: 12.497750
-	},
-	{
-		name: "Ristochiccio",
-		latitude: 41.903663,
-		longitude: 12.462208
+		name: "Dar Poeta",
+		latitude: 41.891410,
+		longitude: 12.468990,
 	},
 	{
 		name: "La Prosciutteria",
 		latitude: 41.901910,
-		longitude: 12.484521
+		longitude: 12.484521,
 	},
 	{
-		name: "Ai Tre Scalini",
-		latitude: 41.897175,
-		longitude: 12.494829
+		name: "Hostaria Romana",
+		latitude: 41.902474,
+		longitude: 12.487247,
+	},
+	{
+		name: "Pastasciutta",
+		latitude: 41.904638,
+		longitude: 12.458035,
+	},
+	{
+		name: "Pinsere",
+		latitude: 41.907540,
+		longitude: 12.497750,
+	},
+	{
+		name: "Tazza d'Oro",
+		latitude: 41.899482,
+		longitude: 12.477343,
+	},
+	{
+		name: "Taverna Trilussa",
+		latitude: 41.890630,
+		longitude: 12.471430,
 	}
-];		
+];	
 
-var markers = [];
-var map = new google.maps.Map(document.getElementById('google_map'), {
-  center: {lat: 41.897102, lng: 12.485357}, 
-  scrollwheel: false,
-  zoom: 14
-});
-var bounds = new google.maps.LatLngBounds();
-var infowindow = new google.maps.InfoWindow();
-
-function initMap() {
-
-  for (var i = 0; i < restaurants.length; i++) {  
-    addMarker(restaurants[i]);
-  }
-
-  var filterRestaurants = function(e) {
-	clearMarkers();
-    for (var i = 0; i < restaurants.length; i++) {
-      if (document.getElementById("search_bar").value.toUpperCase() === restaurants[i].name.toUpperCase()) {
-		addMarker(restaurants[i]);
-	  } else {
-        console.log("Cannot find restaurant");
-      }
-  	}
-	e.preventDefault();
-  };
-  
-  var filterRestaurantsFromList = function(e) {
-    clearMarkers();
-	for (var i = 0; restaurants.length; i++) {
-	  if (document.getElementsByClassName("restaurant_link")[i].childNodes[i].nodeValue === restaurants[i].name) {
-		addMarker(restaurants[i]);
-	  } else {
-	  	console.log("Failed to find restaurant")
-	  }
-	    }
-	e.preventDefault();
-	  };
+var viewModel = function(){
 	
-  searchButton.addEventListener("click", filterRestaurants);
-  
-  var restaurantsInListView = document.getElementsByClassName("restaurant_link");
+	var self = this;
+	
+	self.restaurantName = ko.observable();
+	
+	
+	//markers are pushed to empty array after they are created, array can be looped over
 
-  var filterListView = function() {
-	for (var i = 0; i < restaurantsInListView.length; i++) {
-		restaurantsInListView[i].addEventListener('click', filterRestaurantsFromList);
+	var markers = [];
+	var searchButton = document.getElementById("search_button");
+	var searchedRestaurant = document.getElementById("search_bar").value;
+	
+	//setting up the map and info window
+	
+	var map = new google.maps.Map(document.getElementById('google_map'), {
+  	  center: {lat: 41.897102, lng: 12.485357}, 
+ 	   scrollwheel: false,
+ 	   zoom: 14
+	});
+	var bounds = new google.maps.LatLngBounds();
+	var infowindow = new google.maps.InfoWindow();
+	
+	//loading the page initializes the map and automatically adds markers to each restaurant in the array
+
+	function initMap() {
+
+		for (var i = 0; i < restaurants.length; i++) {  
+			addMarker(restaurants[i]);
+		}
+		
+		//when a restaurant is searched, markers are cleared and the correct restaurant is identified
+		//and gets a marker
+		
+		var filterRestaurants = function(e) {
+			clearMarkers();
+			addMarker(self.restaurantName());
+			e.preventDefault();
+		}
+		
+		
+		
+		// var filterRestaurants = function(e) {
+		// 	clearMarkers();
+		// 	for (var i = 0; i < restaurants.length; i++) {
+		// 		if (document.getElementById("search_bar").value.toUpperCase() === restaurants[i].name.toUpperCase()) {
+		// 			addMarker(restaurants[i]);
+		// 		} else {
+		// 			console.log("Cannot find restaurant");
+		// 		}
+		// 	}
+		// 	e.preventDefault();
+		// };
+		
+		//When a restaurant is clicked on in the list view, markers are cleared and the correct restaurant is identified
+		//and gets a marker
+		
+		var filterRestaurantsFromList = function(e) {
+			clearMarkers();
+			for (var i = 0; i < restaurants.length; i++) {
+				if (document.getElementsByClassName("restaurant_link")[i].childNodes[i].nodeValue === restaurants[i].name) {
+					addMarker(restaurants[i]);
+				} else {
+					console.log("Failed to find restaurant")
+				}
+			}
+			e.preventDefault();
+		};
+		
+		//search button has an event listener to trigger the filterRestaurants function
+	  
+		searchButton.addEventListener("click", filterRestaurants);
+		var restaurantsInListView = document.getElementsByClassName("restaurant_link");
 	}
-  }
-  filterListView();
-};
+	
+	//map is initialized
+	
+	initMap();
+	
+	//function to add marker onto restaurants using hard-coded latitude and longitude
 
-function addMarker(restaurant) {
-  var marker = new google.maps.Marker({
-	position: new google.maps.LatLng(restaurant.latitude, restaurant.longitude),
-    map: map
-  });
+	function addMarker(restaurant) {
+		var marker = new google.maps.Marker({
+			icon: "images/marker_rome.png",
+			position: new google.maps.LatLng(restaurant.latitude, restaurant.longitude),
+			map: map
+		});
+		
+		//when marker is clicked, info window opens and animation for marker
+	
+		var markerListener = function() {
+			infowindow.open(map, marker);
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+			window.setTimeout(function() {
+				marker.setAnimation(null);
+			}, 2000);
+			
+			//API is called when marker is clicked, getting data for the clicked restaurant
+			//Data is written into the info window 
+		
+			var foursquareURL = "https://api.foursquare.com/v2/venues/search?client_id=42HRMQSBPL43B4H22LZON2212KL0OS4EGUN0GQBYAS01253P&client_secret=GJ3ZMNOCIRQW31TZ1XFUXWOBZVKLQ1C3TC5S3NBQXGAAHBXE&v=20150321&ll=" + restaurant.latitude + "," + restaurant.longitude + "&intent=global&limit=1&query=" + restaurant.name;
+
+			$.getJSON(foursquareURL, function(data) {
+				console.log(data);
+				var fsAddress1 = data.response.venues[0].location.formattedAddress[0];
+				var fsAddress2 = data.response.venues[0].location.formattedAddress[1];
+				var fsAddress3 = data.response.venues[0].location.formattedAddress[2];
+				var fsURLs = data.response.venues[0].url;
+				var fsName = data.response.venues[0].name;
+				infowindow.setContent("<h5>" + fsName + "</h5><h5>" + fsAddress1 + "</h5><h5>" + fsAddress2 + "</h5><h5>" + fsAddress3 + "</h5><h5><a>" + fsURLs + "</a></h5");	
+				if (!data.response.venues[0].url) {
+					infowindow.setContent("<h5>" + fsName + "</h5><h5>" + fsAddress1 + "</h5><h5>" + fsAddress2 + "</h5><h5>" + fsAddress3 + "</h5><h5>Restraurant site not available</h5");
+				};
+				
+				//error handling for if Foursquare API fails
+				
+			}).error(function(error) {
+				infowindow.setContent("<h5>Foursquare information not available</h5>")
+			});
+		};
+		
+		//event listener added to the marker on click
+		
+		google.maps.event.addListener(marker, 'click', markerListener);
+		
+		//markers pushed to array after they are created by the addMarker function
+		
+		markers.push(marker);
+	};
+	
+	function clearMarkers() {
+		markers.forEach(function(marker) {
+			marker.setMap(null);
+		});
+		markers = [];
+	}
+};
   
-  var markerListener = function() {
-    infowindow.setContent(restaurant.name);
-    infowindow.open(map, marker);
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-    window.setTimeout(function() {
-      marker.setAnimation(null);
-    }, 2000);
-  };
-  google.maps.event.addListener(marker, 'click', markerListener);
-  markers.push(marker);
-  
-  }
 
 var initializeListView = function() {
-  for (var i = 0; i < restaurants.length; i++){
-	  console.log("Hi");
-    var listItem = document.createElement("li");
-	var list = document.getElementById("list_view");
-	list.appendChild(listItem);
-	var listAnchor = document.createElement("a");
-	var anchorText = document.createTextNode(restaurants[i].name);
-	listItem.appendChild(listAnchor);
-	listAnchor.appendChild(anchorText);
-	$(listAnchor).addClass("restaurant_link");
-  }
+	for (var i = 0; i < restaurants.length; i++){
+		var listItem = document.createElement("li");
+		var list = document.getElementById("list_view");
+		list.appendChild(listItem);
+		var listAnchor = document.createElement("a");
+		var anchorText = document.createTextNode(restaurants[i].name);
+		listItem.appendChild(listAnchor);
+		listAnchor.appendChild(anchorText);
+		$(listAnchor).addClass("restaurant_link");
+		
+		var listItemEventListener = function(clickedRestaurant) {
+			return function(e) {
+				clearMarkers();
+				addMarker(clickedRestaurant);
+				e.preventDefault();
+			};
+		}(restaurants[i]);
+		listItem.addEventListener("click", listItemEventListener);
+	}
 };
 
 initializeListView();
 
-function clearMarkers() {
-  markers.forEach(function(marker) {
-	marker.setMap(null);
-  });
-  markers = [];
-}
-
-  
-var searchButton = document.getElementById("search_button");
-var searchedRestaurant = document.getElementById("search_bar").value.toUpperCase();
 
 
-var generateContentString = function (nameLocation) {
- var nameLocation = nameLocation;
- var location = "Roma";
- var consumerKey = "CONSUMER KEY";
- var consumerKeySecret = "CONSUMER KEY SECRET"
- var token = "TOKEN"
- var tokenSecret = "TOKEN SECRET";
-
-/*
- * Get yelp Info 
- */
-
-   function nonce_generate() {
-      return (Math.floor(Math.random() * 1e12).toString());
-  }
-
-  var yelp_url = "http://api.yelp.com/v2/search?term=food&location=Roma&oauth_consumer_key=CONSUMER KEY&oauth_token=TOKEN&oauth_signature_method=HMAC-SHA1&oauth_signature=SIGNATURE&oauth_timestamp=1449604258&oauth_nonce=679571719&oauth_version=1.0";
- 
-
-  var parameters = {
-    oauth_consumer_key: CONSUMER KEY,
-    oauth_token: TOKEN,
-    oauth_nonce: nonce_generate(),
-    oauth_timestamp: Math.floor(Date.now() / 1000),
-    oauth_signature_method: 'HMAC-SHA1',
-    oauth_version: '1.0',
-    callback: 'cb',
-    term: term,
-    location: location,
-    limit: 1
-  }
-};
-
-var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, CONSUMER KEY, CONSUMER SECRET, TOKEN SECRET);
-parameters.outh_signature = encodedSignature;
-var settings =  {
-     url: yelp_url,
-	 data: parameters,
-	 cache: true,
-	 dataType: 'jsonp',
-	 success: function(results) {
-	           console.log("yelp success");
-	 },
-	 error: function() {
-	       console.log("error");
-	}
-};
-	 $.ajax(settings);
 
 
-initMap();
+viewModel();
+
+ko.applyBindings(new viewModel());
 
 
 	
