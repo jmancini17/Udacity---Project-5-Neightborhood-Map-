@@ -22,7 +22,23 @@ form {
 	height: 50px;
 	background-color: #ffffff;
 	font-size: 1.3em;
-	
+	padding-left: 2em;
+}
+
+::-webkit-input-placeholder {
+   font-family: "Roboto Slab";
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   font-family: "Roboto Slab"; 
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   font-family: "Roboto Slab"; 
+}
+
+:-ms-input-placeholder {  
+   font-family: "Roboto Slab"; 
 }
 
 .nav_bar {
@@ -58,6 +74,7 @@ form {
 	  padding: 10px 20px 10px 20px;
 	  text-decoration: none;
 	  z-index: 11;
+	  font-family: "Varela Rounded";
 }
 
 #list_view {
@@ -76,6 +93,7 @@ h4 {
 	padding-bottom: 10px;
 	margin-top: 12px;
 	margin-bottom: 8px;
+	font-family: "Varela Rounded";
 }
 
 li {
@@ -89,6 +107,8 @@ li {
 	width: 100%;
 	color: #ffffff;
 	padding-top: 14px;
+	font-family: "Varela Rounded";
+	font-weight: 300;
 }
 
 
@@ -101,3 +121,7 @@ a:hover {
 	color: black;
 }
 
+img {
+	width: 50%;
+	height: 50%;
+}
