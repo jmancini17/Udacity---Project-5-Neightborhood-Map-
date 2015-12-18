@@ -53,12 +53,6 @@ var restaurants = [
 	}
 ];	
 
-var viewModel = function(){
-	
-	var self = this;
-	
-	self.restaurantName = ko.observable();
-	
 	
 	//markers are pushed to empty array after they are created, array can be looped over
 
@@ -89,23 +83,13 @@ var viewModel = function(){
 		
 		var filterRestaurants = function(e) {
 			clearMarkers();
-			addMarker(self.restaurantName());
+			for (var i = 0; i < restaurants.length; i++) {
+				if (document.getElementById("search_bar").value.toUpperCase() === restaurants[i].name.toUpperCase()) {
+					addMarker(restaurants[i]);
+				} 
+			}
 			e.preventDefault();
-		}
-		
-		
-		
-		// var filterRestaurants = function(e) {
-		// 	clearMarkers();
-		// 	for (var i = 0; i < restaurants.length; i++) {
-		// 		if (document.getElementById("search_bar").value.toUpperCase() === restaurants[i].name.toUpperCase()) {
-		// 			addMarker(restaurants[i]);
-		// 		} else {
-		// 			console.log("Cannot find restaurant");
-		// 		}
-		// 	}
-		// 	e.preventDefault();
-		// };
+		};
 		
 		//When a restaurant is clicked on in the list view, markers are cleared and the correct restaurant is identified
 		//and gets a marker
@@ -182,14 +166,7 @@ var viewModel = function(){
 		
 		markers.push(marker);
 	};
-	
-	function clearMarkers() {
-		markers.forEach(function(marker) {
-			marker.setMap(null);
-		});
-		markers = [];
-	}
-};
+
   
 
 var initializeListView = function() {
@@ -216,13 +193,13 @@ var initializeListView = function() {
 
 initializeListView();
 
+function clearMarkers() {
+	markers.forEach(function(marker) {
+		marker.setMap(null);
+	});
+	markers = [];
+}
 
-
-
-
-viewModel();
-
-ko.applyBindings(new viewModel());
 
 
 	
